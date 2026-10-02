@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import styles from './Dropzone.module.css';
-import { Upload, FolderArchive, Sparkles, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { extractImagesFromZip, processImageFiles } from '@/utils/archiveExtractor';
 import { getSampleGalleryPhotos } from '@/utils/sampleImages';
 import { PhotoItem } from '@/types/collage';
@@ -98,11 +98,7 @@ export const Dropzone: React.FC<DropzoneProps> = ({ onPhotosLoaded, isCompact = 
           className={styles.compactBtn}
           disabled={isProcessing}
         >
-          {isProcessing ? (
-            <Loader2 className={styles.spin} size={16} />
-          ) : (
-            <Upload size={16} />
-          )}
+          {isProcessing && <Loader2 className={styles.spin} size={16} />}
           <span>{isProcessing ? `${progress}%` : 'Upload ZIP / Photos'}</span>
         </button>
         <button
@@ -111,7 +107,6 @@ export const Dropzone: React.FC<DropzoneProps> = ({ onPhotosLoaded, isCompact = 
           title="Load curated sample photo gallery"
           disabled={isProcessing}
         >
-          <Sparkles size={16} />
           <span>Demo</span>
         </button>
       </div>
@@ -137,9 +132,13 @@ export const Dropzone: React.FC<DropzoneProps> = ({ onPhotosLoaded, isCompact = 
 
       <div className={styles.iconCircle}>
         {isProcessing ? (
-          <Loader2 className={styles.spin} size={36} />
+          <Loader2 className={styles.spin} size={30} />
         ) : (
-          <FolderArchive size={36} />
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
         )}
       </div>
 
@@ -169,29 +168,21 @@ export const Dropzone: React.FC<DropzoneProps> = ({ onPhotosLoaded, isCompact = 
             className={styles.browseBtn}
             onClick={() => fileInputRef.current?.click()}
           >
-            <Upload size={18} />
             <span>Select .ZIP or Images</span>
           </button>
 
           <span className={styles.orText}>or</span>
 
           <button className={styles.demoBtn} onClick={handleLoadDemo}>
-            <Sparkles size={18} />
             <span>Try with Sample Gallery</span>
           </button>
         </div>
       )}
 
       <div className={styles.featuresPills}>
-        <span className={styles.pill}>
-          <ImageIcon size={14} /> Auto BSP Grids
-        </span>
-        <span className={styles.pill}>
-          <FolderArchive size={14} /> Subfolder Traversal
-        </span>
-        <span className={styles.pill}>
-          <Sparkles size={14} /> 4K Offscreen Export
-        </span>
+        <span className={styles.pill}>Auto BSP Grids</span>
+        <span className={styles.pill}>Subfolder Traversal</span>
+        <span className={styles.pill}>4K Offscreen Export</span>
       </div>
     </div>
   );

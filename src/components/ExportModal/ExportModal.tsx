@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import styles from './ExportModal.module.css';
 import { LayoutCell, CollageSettings } from '@/types/collage';
 import { exportCollageAsPng } from '@/utils/exportEngine';
-import { X, Download, Sparkles, CheckCircle2, Loader2, Printer } from 'lucide-react';
+import { X, Loader2 } from 'lucide-react';
 
 interface ExportModalProps {
   isOpen: boolean;
@@ -65,7 +65,6 @@ export const ExportModal: React.FC<ExportModalProps> = ({
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
           <div className={styles.titleWrap}>
-            <Sparkles size={20} className={styles.headerIcon} />
             <h3>Export High-Resolution PNG</h3>
           </div>
           <button className={styles.closeBtn} onClick={onClose} aria-label="Close export dialog">
@@ -125,7 +124,6 @@ export const ExportModal: React.FC<ExportModalProps> = ({
         </div>
 
         <div className={styles.targetBanner}>
-          <Printer size={16} />
           <span>Output: {currentW} × {currentH} px PNG (Lossless)</span>
         </div>
 
@@ -145,11 +143,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
             onClick={handleExport}
             disabled={isExporting}
           >
-            {isExporting ? (
-              <Loader2 className={styles.spin} size={18} />
-            ) : (
-              <Download size={18} />
-            )}
+            {isExporting && <Loader2 className={styles.spin} size={18} />}
             <span>{isExporting ? 'Generating PNG...' : 'Download PNG'}</span>
           </button>
         </div>

@@ -3,14 +3,10 @@
 import React from 'react';
 import styles from './Header.module.css';
 import {
-  Sparkles,
-  Dices,
-  Shuffle,
   Undo2,
   Redo2,
-  Download,
-  Upload,
-  Layers,
+  Sun,
+  Moon,
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -23,6 +19,8 @@ interface HeaderProps {
   onShufflePhotos: () => void;
   onOpenExport: () => void;
   onReset: () => void;
+  theme?: 'dark' | 'light';
+  onToggleTheme?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -35,14 +33,13 @@ export const Header: React.FC<HeaderProps> = ({
   onShufflePhotos,
   onOpenExport,
   onReset,
+  theme = 'dark',
+  onToggleTheme,
 }) => {
   return (
     <header className={styles.header}>
       {/* Brand logo & title */}
       <div className={styles.brand}>
-        <div className={styles.logoIcon}>
-          <Layers size={20} />
-        </div>
         <div className={styles.brandText}>
           <h1 className={styles.title}>CollageForge</h1>
         </div>
@@ -53,77 +50,87 @@ export const Header: React.FC<HeaderProps> = ({
         )}
       </div>
 
-      {/* Main Action Bar */}
-      {photoCount > 0 && (
-        <div className={styles.actions}>
-          {/* Undo / Redo */}
-          <div className={styles.historyGroup}>
+      {/* Right controls: Actions + Theme Toggle */}
+      <div className={styles.headerRight}>
+        {photoCount > 0 && (
+          <div className={styles.actions}>
+            {/* Undo / Redo */}
+            <div className={styles.historyGroup}>
+              <button
+                className={styles.iconBtn}
+                onClick={onUndo}
+                disabled={!canUndo}
+                title="Undo (Ctrl+Z)"
+                aria-label="Undo"
+              >
+                <Undo2 size={16} />
+              </button>
+              <button
+                className={styles.iconBtn}
+                onClick={onRedo}
+                disabled={!canRedo}
+                title="Redo (Ctrl+Y)"
+                aria-label="Redo"
+              >
+                <Redo2 size={16} />
+              </button>
+            </div>
+
+            <div className={styles.divider} />
+
+            {/* Procedural Grid Mutations */}
             <button
-              className={styles.iconBtn}
-              onClick={onUndo}
-              disabled={!canUndo}
-              title="Undo (Ctrl+Z)"
-              aria-label="Undo"
+              className={styles.actionBtn}
+              onClick={onRerollLayout}
+              title="Generate new irregular BSP grid splits (R)"
             >
-              <Undo2 size={16} />
+              <span>Re-Roll Layout</span>
+              <kbd className={styles.kbd}>R</kbd>
             </button>
+
             <button
-              className={styles.iconBtn}
-              onClick={onRedo}
-              disabled={!canRedo}
-              title="Redo (Ctrl+Y)"
-              aria-label="Redo"
+              className={styles.actionBtn}
+              onClick={onShufflePhotos}
+              title="Randomize photo positions inside current layout (S)"
             >
-              <Redo2 size={16} />
+              <span>Shuffle Photos</span>
+              <kbd className={styles.kbd}>S</kbd>
+            </button>
+
+            <div className={styles.divider} />
+
+            {/* New Upload / Clear */}
+            <button
+              className={styles.textBtn}
+              onClick={onReset}
+              title="Clear and upload new .zip archive"
+            >
+              <span>New Media</span>
+            </button>
+
+            {/* Export PNG */}
+            <button
+              className={styles.exportBtn}
+              onClick={onOpenExport}
+              title="Export high-resolution PNG (Ctrl+E)"
+            >
+              <span>Export PNG</span>
             </button>
           </div>
+        )}
 
-          <div className={styles.divider} />
-
-          {/* Procedural Grid Mutations */}
+        {/* Theme Toggle Button */}
+        {onToggleTheme && (
           <button
-            className={styles.actionBtn}
-            onClick={onRerollLayout}
-            title="Generate new irregular BSP grid splits (R)"
+            className={styles.themeToggleBtn}
+            onClick={onToggleTheme}
+            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            aria-label="Toggle theme"
           >
-            <Dices size={16} className={styles.diceIcon} />
-            <span>Re-Roll Layout</span>
-            <kbd className={styles.kbd}>R</kbd>
+            {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
           </button>
-
-          <button
-            className={styles.actionBtn}
-            onClick={onShufflePhotos}
-            title="Randomize photo positions inside current layout (S)"
-          >
-            <Shuffle size={16} />
-            <span>Shuffle Photos</span>
-            <kbd className={styles.kbd}>S</kbd>
-          </button>
-
-          <div className={styles.divider} />
-
-          {/* New Upload / Clear */}
-          <button
-            className={styles.textBtn}
-            onClick={onReset}
-            title="Clear and upload new .zip archive"
-          >
-            <Upload size={15} />
-            <span>New Media</span>
-          </button>
-
-          {/* Export PNG */}
-          <button
-            className={styles.exportBtn}
-            onClick={onOpenExport}
-            title="Export high-resolution PNG (Ctrl+E)"
-          >
-            <Download size={16} />
-            <span>Export PNG</span>
-          </button>
-        </div>
-      )}
+        )}
+      </div>
     </header>
   );
 };

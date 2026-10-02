@@ -34,6 +34,27 @@ A high-performance, client-side web application designed to eliminate the manual
   * **Dominant Clusters:** Direct cluster centroid tones representing the largest pixel clusters.
 * **Full Customization:** Native HTML5 color picker and hex input for custom palette selection.
 
+### 🌈 Gradient Backgrounds & Customizer
+* **Linear & Radial Modes:** Smooth multi-stop gradients rendered directly onto the canvas and high-res export passes.
+* **Granular Controls:** Linear angle slider ($0^\circ\text{--}360^\circ$) with cardinal direction shortcuts (Horizontal $90^\circ$, Vertical $180^\circ$, Diagonal $135^\circ$, $45^\circ$) and dual start/end color pickers.
+* **Curated Gradient Presets:** One-click palettes including Sunset Ember, Espresso Twilight, Nordic Slate, Golden Amber, Rose Noir, Deep Emerald, Studio Light, and Desert Sand.
+* **Photo-Matched Gradient Generator:** 1-click button to synthesize an ambient background gradient directly from the photos' top KNN dominant cluster tones.
+
+### 🌟 Cell Effects & 3D Depth
+* **Shadows & Luminous Glows:** Multi-pass canvas rendering projects realistic drop shadows or radiant ambient/neon halos around individual photo cells into the canvas background.
+* **Curated Effect Presets:**
+  * *None:* Crisp, flush photographic edges.
+  * *Soft Shadow:* Subtle, modern floating elevation.
+  * *Deep 3D:* High-contrast drop shadow for physical card / polaroid depth.
+  * *Warm Glow:* Ambient golden-amber halo radiating from cell boundaries.
+  * *Framed:* Sharp, solid gallery border matting.
+  * *Floating Mat:* Combined drop shadow with inset white frame.
+* **Granular Controls:** Integrated native color picker, opacity/alpha slider ($5\%\text{--}100\%$), blur intensity slider, and border frame width control.
+
+### 🌗 Light & Dark Mode
+* **Instant Toggle:** Header toggle button supporting seamless transitions between a sleek dark slate theme and a clean, gallery-editorial light theme.
+* **Local Persistence:** Remembers user preference across sessions via `localStorage` with automatic system theme detection.
+
 ### 🖱️ Interactive Canvas Manipulation
 * **Drag & Swap:** Drag one cell over another to instantly swap image positions with glowing drop targets.
 * **Focal Zoom & Pan:** Select any cell to crop-zoom ($1.0\times$ to $3.0\times$) and pan along X/Y axes without breaking cell boundaries.

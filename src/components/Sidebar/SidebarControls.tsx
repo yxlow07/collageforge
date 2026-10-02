@@ -2,19 +2,10 @@
 
 import React from 'react';
 import styles from './SidebarControls.module.css';
-import { CollageSettings, AspectPreset, LayoutCell, CollageTemplateId, SuggestedColor } from '@/types/collage';
+import { CollageSettings, AspectPreset, LayoutCell, CollageTemplateId, SuggestedColor, CellEffectConfig } from '@/types/collage';
 import { COLLAGE_TEMPLATES } from '@/utils/layoutEngine';
 import { BackgroundColorSection } from './BackgroundColorSection';
-import {
-  Sliders,
-  Maximize2,
-  Square,
-  Smartphone,
-  Tv,
-  FileText,
-  RotateCcw,
-  Sparkles,
-} from 'lucide-react';
+import { CellEffectsSection } from './CellEffectsSection';
 
 export const ASPECT_PRESETS: AspectPreset[] = [
   { id: '1:1', label: '1:1 Square', width: 1200, height: 1200 },
@@ -56,28 +47,11 @@ export const SidebarControls: React.FC<SidebarControlsProps> = ({
     });
   };
 
-  const getPresetIcon = (id: string) => {
-    switch (id) {
-      case '1:1':
-        return <Square size={14} />;
-      case '9:16':
-      case '4:5':
-      case '2:3':
-        return <Smartphone size={14} />;
-      case '16:9':
-      case '3:2':
-        return <Tv size={14} />;
-      default:
-        return <FileText size={14} />;
-    }
-  };
-
   return (
     <aside className={styles.sidebar}>
       {/* Template Presets Section */}
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
-          <Sparkles size={16} className={styles.headerIcon} />
           <h4>Collage Template</h4>
         </div>
         <div className={styles.templateList}>
@@ -101,7 +75,6 @@ export const SidebarControls: React.FC<SidebarControlsProps> = ({
       {/* Aspect Ratio Section */}
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
-          <Maximize2 size={16} className={styles.headerIcon} />
           <h4>Canvas Ratio</h4>
         </div>
         <div className={styles.presetGrid}>
@@ -113,7 +86,6 @@ export const SidebarControls: React.FC<SidebarControlsProps> = ({
                 className={`${styles.presetBtn} ${isActive ? styles.activePreset : ''}`}
                 onClick={() => handlePresetSelect(p)}
               >
-                {getPresetIcon(p.id)}
                 <span>{p.label}</span>
               </button>
             );
@@ -124,7 +96,6 @@ export const SidebarControls: React.FC<SidebarControlsProps> = ({
       {/* Frame Spacing & Curves */}
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
-          <Sliders size={16} className={styles.headerIcon} />
           <h4>Layout Styling</h4>
         </div>
 
@@ -163,22 +134,38 @@ export const SidebarControls: React.FC<SidebarControlsProps> = ({
         </div>
       </section>
 
-      {/* Background / Gap Color */}
+      {/* Background / Gap Color & Gradient */}
       <BackgroundColorSection
         backgroundColor={settings.backgroundColor}
         onUpdateColor={(backgroundColor) => onUpdateSettings({ backgroundColor })}
+        gradient={settings.gradient}
+        onUpdateGradient={(newGrad) =>
+          onUpdateSettings({
+            gradient: { ...(settings.gradient || {}), ...newGrad } as any,
+          })
+        }
         suggestedColors={suggestedColors}
         isExtracting={isExtractingColors}
         onReExtract={onReExtractColors}
         photoCount={totalPhotos}
       />
 
+      {/* Cell Effects (Glow, Shadow, Borders) */}
+      <CellEffectsSection
+        cellEffect={settings.cellEffect}
+        onUpdateEffect={(newEffect) =>
+          onUpdateSettings({
+            cellEffect: { ...(settings.cellEffect || {}), ...newEffect } as CellEffectConfig,
+          })
+        }
+      />
+
+
 
       {/* Selected Cell Controls */}
       {selectedCell && (
         <section className={`${styles.section} ${styles.cellSection}`}>
           <div className={styles.sectionHeader}>
-            <Sliders size={16} className={styles.headerIcon} />
             <h4>Active Frame Zoom</h4>
           </div>
 
@@ -205,7 +192,6 @@ export const SidebarControls: React.FC<SidebarControlsProps> = ({
             className={styles.resetPanBtn}
             onClick={() => onUpdateSelectedCell({ zoom: 1, offsetX: 0, offsetY: 0 })}
           >
-            <RotateCcw size={14} />
             <span>Reset Frame Pan & Zoom</span>
           </button>
         </section>

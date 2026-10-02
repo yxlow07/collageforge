@@ -12,6 +12,27 @@
   padding: 24px;
 }
 
+.canvasContainer.spacePressed {
+  cursor: grab !important;
+}
+
+.canvasContainer.workspacePanning {
+  cursor: grabbing !important;
+}
+
+.canvasViewport {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center center;
+  transition: transform 0.08s cubic-bezier(0.2, 0, 0, 1);
+  will-change: transform;
+}
+
+.canvasViewport.isDraggingWorkspace {
+  transition: none;
+}
+
 .canvasWrapper {
   position: relative;
   max-width: 100%;
@@ -19,7 +40,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
   border: 1px solid var(--border-subtle);
   border-radius: 8px;
   overflow: hidden;
@@ -55,6 +76,7 @@
   gap: 8px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
   z-index: 20;
+  backdrop-filter: blur(8px);
 }
 
 .toolbarLabel {
@@ -97,4 +119,106 @@
   min-width: 38px;
   text-align: center;
   font-family: var(--font-mono);
+}
+
+/* Floating Zoom HUD in bottom-right corner */
+.zoomHUD {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  padding: 4px 6px;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  z-index: 25;
+  backdrop-filter: blur(8px);
+}
+
+.zoomBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.12s ease;
+}
+
+.zoomBtn:hover {
+  background: var(--bg-surface-hover);
+  color: var(--text-primary);
+}
+
+.zoomValueBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 0.74rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  padding: 3px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  min-width: 48px;
+  text-align: center;
+  transition: all 0.12s ease;
+}
+
+.zoomValueBtn:hover {
+  background: var(--bg-surface-hover);
+  color: var(--accent-primary);
+}
+
+.zoomFitBtn {
+  background: var(--bg-app);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 3px 7px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.12s ease;
+}
+
+.zoomFitBtn:hover {
+  background: var(--bg-surface-hover);
+  color: var(--text-primary);
+  border-color: var(--border-default);
+}
+
+/* Gesture helper hint in bottom-left corner */
+.zoomHint {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  background: rgba(14, 14, 17, 0.7);
+  padding: 4px 9px;
+  border-radius: 6px;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--border-subtle);
+  z-index: 20;
+}
+
+@media (max-width: 900px) {
+  .zoomHint {
+    display: none;
+  }
 }

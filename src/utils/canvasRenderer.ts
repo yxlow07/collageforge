@@ -77,12 +77,88 @@ export function renderCollage(options: RenderOptions): void {
 
   // Clear background
   ctx.clearRect(0, 0, width, height);
-  if (settings.backgroundColor) {
+  if (settings.gradient?.enabled) {
+    const { type, angle = 135, colorStart, colorEnd, colorMiddle } = settings.gradient;
+    let grad: CanvasGradient;
+
+    if (type === 'radial') {
+      const cx = width / 2;
+      const cy = height / 2;
+      const maxDist = Math.max(width, height) / 2;
+      grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxDist);
+    } else {
+      const rad = ((angle - 90) * Math.PI) / 180;
+      const cx = width / 2;
+      const cy = height / 2;
+      const diag = Math.sqrt(width * width + height * height) / 2;
+      const x0 = cx - Math.cos(rad) * diag;
+      const y0 = cy - Math.sin(rad) * diag;
+      const x1 = cx + Math.cos(rad) * diag;
+      const y1 = cy + Math.sin(rad) * diag;
+      grad = ctx.createLinearGradient(x0, y0, x1, y1);
+    }
+
+    grad.addColorStop(0, colorStart || '#2d1810');
+    if (colorMiddle) {
+      grad.addColorStop(0.5, colorMiddle);
+    }
+    grad.addColorStop(1, colorEnd || '#0f0c0a');
+
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, width, height);
+  } else if (settings.backgroundColor) {
     ctx.fillStyle = settings.backgroundColor;
     ctx.fillRect(0, 0, width, height);
   }
 
   const pixelCells = calculatePixelCells(cells, width, height, gap);
+  const effect = settings.cellEffect || {
+    type: 'none',
+    blur: 0,
+    color: 'rgba(0, 0, 0, 0.45)',
+    borderWidth: 0,
+    borderColor: '#ffffff',
+  };
+
+  // Pass 1: Draw outer shadows or glows behind cells
+  if (effect.type !== 'none' && effect.blur > 0) {
+    pixelCells.forEach((b) => {
+      ctx.save();
+      ctx.shadowColor = effect.color;
+
+      if (effect.type === 'radiant_glow') {
+        // Ambient aura / neon glow: tight uniform halo around cell
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        // Clamp glow blur so it doesn't flood the entire gap and canvas background
+        const maxBlur = gap > 0 ? Math.min(effect.blur, Math.max(4, gap * 0.85)) : Math.min(effect.blur, 8);
+        ctx.shadowBlur = maxBlur * scale;
+      } else if (effect.type === 'deep_shadow') {
+        // Deep 3D physical card shadow: strong downward offset with realistic tight penumbra
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = Math.max(3, Math.round(effect.blur * 0.45)) * scale;
+        const blur = Math.max(2, Math.round(effect.blur * 0.55)) * scale;
+        ctx.shadowBlur = blur;
+      } else if (effect.type === 'floating_frame') {
+        // Floating frame / mat shadow: moderate downward drop
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = Math.max(2, Math.round(effect.blur * 0.35)) * scale;
+        const blur = Math.max(2, Math.round(effect.blur * 0.45)) * scale;
+        ctx.shadowBlur = blur;
+      } else {
+        // Soft Shadow: subtle, elegant downward card shadow
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = Math.max(2, Math.round(effect.blur * 0.3)) * scale;
+        const blur = Math.max(2, Math.round(effect.blur * 0.45)) * scale;
+        ctx.shadowBlur = blur;
+      }
+
+      ctx.fillStyle = '#000000';
+      drawRoundedPath(ctx, b.x, b.y, b.width, b.height, radius);
+      ctx.fill();
+      ctx.restore();
+    });
+  }
 
   pixelCells.forEach((b) => {
     const cell = cells.find((c) => c.id === b.cellId);
@@ -149,6 +225,16 @@ export function renderCollage(options: RenderOptions): void {
     }
 
     ctx.restore();
+
+    // Render cell border if enabled
+    if (effect.borderWidth > 0) {
+      ctx.save();
+      ctx.strokeStyle = effect.borderColor;
+      ctx.lineWidth = effect.borderWidth * scale;
+      drawRoundedPath(ctx, b.x, b.y, b.width, b.height, radius);
+      ctx.stroke();
+      ctx.restore();
+    }
 
     // Visual overlays: Drag target highlight (Warm Sunset Glow)
     if (isDragOver && !isDragging) {

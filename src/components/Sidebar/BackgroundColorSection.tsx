@@ -2,8 +2,9 @@
 
 import React from 'react';
 import styles from './BackgroundColorSection.module.css';
-import { SuggestedColor } from '@/types/collage';
-import { Palette, Sparkles, RefreshCw, Loader2 } from 'lucide-react';
+import { SuggestedColor, GradientSettings } from '@/types/collage';
+import { Loader2 } from 'lucide-react';
+import { GradientCustomizer } from './GradientCustomizer';
 
 export const COLOR_PRESETS = [
   { name: 'Espresso Dark', hex: '#14110e' },
@@ -19,6 +20,8 @@ export const COLOR_PRESETS = [
 interface BackgroundColorSectionProps {
   backgroundColor: string;
   onUpdateColor: (color: string) => void;
+  gradient?: GradientSettings;
+  onUpdateGradient?: (grad: Partial<GradientSettings>) => void;
   suggestedColors: SuggestedColor[];
   isExtracting?: boolean;
   onReExtract?: () => void;
@@ -28,46 +31,95 @@ interface BackgroundColorSectionProps {
 export const BackgroundColorSection: React.FC<BackgroundColorSectionProps> = ({
   backgroundColor,
   onUpdateColor,
+  gradient,
+  onUpdateGradient,
   suggestedColors,
   isExtracting = false,
   onReExtract,
   photoCount,
 }) => {
+  const isGradient = Boolean(gradient?.enabled);
+
+  const handleSetMode = (mode: 'solid' | 'gradient') => {
+    if (onUpdateGradient) {
+      onUpdateGradient({ enabled: mode === 'gradient' });
+    }
+  };
+
+  const gradientPreview = isGradient
+    ? gradient?.type === 'radial'
+      ? `radial-gradient(circle, ${gradient.colorStart}, ${gradient.colorEnd})`
+      : `linear-gradient(${gradient?.angle || 135}deg, ${gradient?.colorStart}, ${gradient?.colorEnd})`
+    : '';
+
   return (
     <section className={styles.section}>
       <div className={styles.sectionHeader}>
         <div className={styles.headerTitle}>
-          <Palette size={16} className={styles.headerIcon} />
-          <h4>Background Color</h4>
+          <h4>Background</h4>
         </div>
         <div className={styles.activeColorBadge}>
-          <span
-            className={`${styles.activeDot} ${!backgroundColor ? styles.checkerboard : ''}`}
-            style={{ backgroundColor: backgroundColor || 'transparent' }}
-          />
-          <span>{backgroundColor || 'Transparent'}</span>
+          {isGradient ? (
+            <>
+              <span className={styles.activeDot} style={{ background: gradientPreview }} />
+              <span>Gradient</span>
+            </>
+          ) : (
+            <>
+              <span
+                className={`${styles.activeDot} ${!backgroundColor ? styles.checkerboard : ''}`}
+                style={{ backgroundColor: backgroundColor || 'transparent' }}
+              />
+              <span>{backgroundColor || 'Transparent'}</span>
+            </>
+          )}
         </div>
       </div>
 
-      {/* Suggested Colors from Photos via KNN / K-Means */}
-      <div className={styles.subgroup}>
-        <div className={styles.subgroupHeader}>
-          <div className={styles.subgroupLabel}>
-            <Sparkles size={13} className={styles.sparkleIcon} />
-            <span>Suggested from Photos</span>
-            <span className={styles.badge}>KNN</span>
-          </div>
-          {photoCount > 0 && onReExtract && (
-            <button
-              onClick={onReExtract}
-              className={styles.reExtractBtn}
-              title="Re-extract color suggestions"
-              disabled={isExtracting}
-            >
-              <RefreshCw size={12} className={isExtracting ? styles.spin : ''} />
-            </button>
-          )}
-        </div>
+      {/* Mode Tabs: Solid vs Gradient */}
+      <div className={styles.modeTabs}>
+        <button
+          className={`${styles.modeTab} ${!isGradient ? styles.activeModeTab : ''}`}
+          onClick={() => handleSetMode('solid')}
+          type="button"
+        >
+          <span>Solid</span>
+        </button>
+        <button
+          className={`${styles.modeTab} ${isGradient ? styles.activeModeTab : ''}`}
+          onClick={() => handleSetMode('gradient')}
+          type="button"
+        >
+          <span>Gradient</span>
+        </button>
+      </div>
+
+      {isGradient ? (
+        <GradientCustomizer
+          gradient={gradient}
+          onUpdateGradient={onUpdateGradient || (() => {})}
+          suggestedColors={suggestedColors}
+        />
+      ) : (
+        <>
+          {/* Suggested Colors from Photos via KNN / K-Means */}
+          <div className={styles.subgroup}>
+            <div className={styles.subgroupHeader}>
+              <div className={styles.subgroupLabel}>
+                <span>Suggested from Photos</span>
+                <span className={styles.badge}>KNN</span>
+              </div>
+              {photoCount > 0 && onReExtract && (
+                <button
+                  onClick={onReExtract}
+                  className={styles.reExtractBtn}
+                  title="Re-extract color suggestions"
+                  disabled={isExtracting}
+                >
+                  <span>Re-extract</span>
+                </button>
+              )}
+            </div>
 
         {isExtracting ? (
           <div className={styles.extractingPlaceholder}>
@@ -144,6 +196,8 @@ export const BackgroundColorSection: React.FC<BackgroundColorSectionProps> = ({
           suppressHydrationWarning
         />
       </div>
+        </>
+      )}
     </section>
   );
 };

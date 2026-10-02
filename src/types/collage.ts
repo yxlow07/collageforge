@@ -38,6 +38,47 @@ export interface TemplateDefinition {
   description: string;
 }
 
+export type CellEffectType =
+  | 'none'
+  | 'soft_shadow'
+  | 'deep_shadow'
+  | 'radiant_glow'
+  | 'classic_border'
+  | 'floating_frame';
+
+export interface CellEffectConfig {
+  type: CellEffectType;
+  blur: number; // 0 to 40 px
+  color: string; // hex or rgba
+  borderWidth: number; // 0 to 12 px
+  borderColor: string;
+}
+
+export const DEFAULT_CELL_EFFECT: CellEffectConfig = {
+  type: 'none',
+  blur: 16,
+  color: 'rgba(0, 0, 0, 0.45)',
+  borderWidth: 0,
+  borderColor: '#ffffff',
+};
+
+export interface GradientSettings {
+  enabled: boolean;
+  type: 'linear' | 'radial';
+  angle: number; // 0 to 360 deg
+  colorStart: string;
+  colorEnd: string;
+  colorMiddle?: string;
+}
+
+export const DEFAULT_GRADIENT_SETTINGS: GradientSettings = {
+  enabled: false,
+  type: 'linear',
+  angle: 135,
+  colorStart: '#2d1810',
+  colorEnd: '#0f0c0a',
+};
+
 export interface CollageSettings {
   aspectRatioId: string;
   canvasWidth: number;
@@ -47,6 +88,8 @@ export interface CollageSettings {
   backgroundColor: string;
   presetName?: string;
   templateId: CollageTemplateId;
+  cellEffect: CellEffectConfig;
+  gradient?: GradientSettings;
 }
 
 export const DEFAULT_COLLAGE_SETTINGS: CollageSettings = {
@@ -58,6 +101,8 @@ export const DEFAULT_COLLAGE_SETTINGS: CollageSettings = {
   backgroundColor: '#14110e',
   presetName: '1:1 Square',
   templateId: 'random_organic',
+  cellEffect: DEFAULT_CELL_EFFECT,
+  gradient: DEFAULT_GRADIENT_SETTINGS,
 };
 
 export interface AspectPreset {

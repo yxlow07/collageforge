@@ -6,6 +6,7 @@ import { PhotoItem, LayoutCell, CollageSettings, ToastMessage, DEFAULT_COLLAGE_S
 import { generateCollageLayout, shufflePhotosInCells } from '@/utils/layoutEngine';
 import { useCollageHistory } from '@/hooks/useCollageHistory';
 import { useColorPalette } from '@/hooks/useColorPalette';
+import { useTheme } from '@/hooks/useTheme';
 import { Header } from '@/components/Header/Header';
 import { Dropzone } from '@/components/Dropzone/Dropzone';
 import { CanvasEditor } from '@/components/CanvasEditor/CanvasEditor';
@@ -23,6 +24,7 @@ export default function CollageApp() {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [isExportOpen, setIsExportOpen] = useState(false);
 
+  const { theme, toggleTheme } = useTheme();
   const { canUndo, canRedo, pushState, undo, redo, resetHistory } = useCollageHistory(
     [],
     DEFAULT_COLLAGE_SETTINGS
@@ -33,6 +35,7 @@ export default function CollageApp() {
     isExtracting: isExtractingColors,
     reExtract: handleReExtractColors,
   } = useColorPalette(photosMap, photos.length);
+
 
 
   const addToast = useCallback((text: string, type: ToastMessage['type'] = 'info') => {
@@ -231,11 +234,9 @@ export default function CollageApp() {
         onRerollLayout={handleRerollLayout}
         onShufflePhotos={handleShufflePhotos}
         onOpenExport={() => setIsExportOpen(true)}
-        onReset={() => {
-          setPhotos([]);
-          setCells([]);
-          setSelectedCellId(null);
-        }}
+        onReset={() => { setPhotos([]); setCells([]); setSelectedCellId(null); }}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
 
       <main className={styles.mainContent}>

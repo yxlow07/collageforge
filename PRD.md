@@ -85,7 +85,10 @@ The **Automated Random Collage Creator** is a web-based tool designed to elimina
 | **Border & Gap Editing** | Global slider control (0px to 40px) | Adjusts inner margins between adjacent cells dynamically without clipping images. |
 | **Border Radius** | Global slider control (0px to 30px) | Rounds the corners of each image cell. |
 | **Border / Background Color** | Color picker + Hex input + KNN Smart Palette | Sets the canvas background color revealed by cell gaps. Uses KNN / K-means clustering on imported photos to extract average pixel color and dynamically suggest harmonized variations (Deep Shade, Soft Tint, Muted Neutral, Vibrant Accent, Warm/Cool Harmony, Complementary, and dominant cluster tones). |
+| **Gradient Backgrounds** | Linear & Radial Customizer + Presets | Smooth linear/radial background gradients with angle control ($0^\circ\text{--}360^\circ$), start/end color pickers, curated gradient presets (Sunset Ember, Twilight Espresso, Nordic Slate, etc.), and 1-click Photo-Matched gradient generator. |
+| **Cell Effects & Depth** | Presets + Intensity & Color controls | Renders outer drop shadows, ambient/neon glows, and crisp photographic borders around cells. Presets: None, Soft Shadow, Deep 3D, Warm Glow, Framed, and Floating Mat with color picker and opacity slider. |
 | **Canvas Dimensions** | Preset dropdown + Custom inputs | Presets: 1:1 (Square), 4:5 (Instagram portrait), 16:9 (Landscape), A4/Poster ratios. |
+| **Light & Dark Mode** | Header toggle button | Seamless transition between sleek dark theme and crisp editorial light theme with local preference persistence. |
 
 ---
 

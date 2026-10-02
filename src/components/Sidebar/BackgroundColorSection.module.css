@@ -51,6 +51,43 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+.modeTabs {
+  display: flex;
+  background: var(--bg-app);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.modeTab {
+  flex: 1;
+  padding: 5px 0;
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  font-size: 0.74rem;
+  font-weight: 500;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.modeTab:hover {
+  color: var(--text-primary);
+}
+
+.activeModeTab {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
 .subgroup {
   display: flex;
   flex-direction: column;
